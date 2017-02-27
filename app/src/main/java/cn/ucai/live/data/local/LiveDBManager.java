@@ -171,6 +171,13 @@ public class LiveDBManager {
         return null;
     }
 
+    synchronized public void closeDB() {
+        if (dbHelper != null) {
+            dbHelper.closeDB();
+        }
+        dbMgr = null;
+    }
+
 
     /**
      * save contact list
