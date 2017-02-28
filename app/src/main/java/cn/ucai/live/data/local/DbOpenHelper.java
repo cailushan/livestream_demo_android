@@ -17,6 +17,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import cn.ucai.live.LiveHelper;
+
 
 public class DbOpenHelper extends SQLiteOpenHelper {
 
@@ -41,7 +43,6 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             + UserDao.USER_COLUMN_NAME_AVATAR_UPDATE_TIME + " TEXT);";
 
 
-
     private static final String CREATE_PREF_TABLE = "CREATE TABLE "
             + UserDao.PREF_TABLE_NAME + " ("
             + UserDao.COLUMN_NAME_DISABLED_GROUPS + " TEXT, "
@@ -59,7 +60,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
     }
 
     private static String getUserDatabaseName() {
-        return "";// LiveHelper.getInstance().getCurrentUsernName() + "_demo.db";
+        return LiveHelper.getInstance().getCurrentUsernName() + "_demo.db";
     }
 
     @Override
