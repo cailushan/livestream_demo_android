@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.ucai.live.data.TestDataRepository;
 import cn.ucai.live.ui.GridMarginDecoration;
 
 import com.bumptech.glide.Glide;
@@ -37,8 +38,10 @@ import cn.ucai.live.R;
 import cn.ucai.live.data.model.LiveRoom;
 import cn.ucai.live.utils.L;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,7 +50,7 @@ public class LiveListFragment extends Fragment {
     private static final String TAG = LiveListFragment.class.getSimpleName();
 
     //    private ProgressBar pb;
-    private ListView listView;
+//    private ListView listView;
     private LiveAdapter adapter;
 
     private List<EMChatRoom> chatRoomList;
@@ -148,11 +151,9 @@ public class LiveListFragment extends Fragment {
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    if (pageCount != 0) {
-                        int laspos = gm.findLastVisibleItemPosition();
-                        if (hasMoreData && !isLoading && laspos == listView.getCount() - 1) {
-                            loadAndShowData();
-                        }
+                    int laspos = gm.findLastVisibleItemPosition();
+                    if (hasMoreData && !isLoading && laspos == chatRoomList.size() - 1) {
+                        loadAndShowData();
                     }
                 }
             }
@@ -191,7 +192,7 @@ public class LiveListFragment extends Fragment {
 //                                pb.setVisibility(View.INVISIBLE);
                                 isFirstLoading = false;
                                 adapter = new LiveAdapter(getContext(), getLiveRoomList(chatRoomList));
-//                                listView.setAdapter(adapter);
+                                recyclerView.setAdapter(adapter);
                             } else {
                                 if (chatRooms.size() < pagesize) {
                                     hasMoreData = false;
