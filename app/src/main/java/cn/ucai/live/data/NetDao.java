@@ -13,7 +13,7 @@ import cn.ucai.live.utils.OnCompleteListener;
 
 
 /**
- * Created by Administrator on 2017/2/8 0008.
+ * Created by LCH on 2017/2/8.
  */
 
 public class NetDao {
@@ -45,7 +45,7 @@ public class NetDao {
                 .execute(listener);
     }
 
-    public static void getUserInfoByUsername(Context context, String username, OnCompleteListener<String> listener) {
+    public static void getUserInfoByUserName(Context context, String username, OnCompleteListener<String> listener) {
         OkHttpUtils<String> utils = new OkHttpUtils<>(context);
         utils.setRequestUrl(I.REQUEST_FIND_USER)
                 .addParam(I.User.USER_NAME, username)
@@ -60,6 +60,7 @@ public class NetDao {
                 .addParam(I.User.NICK, usernick)
                 .targetClass(String.class)
                 .execute(listener);
+
     }
 
     public static void updateUserAvatar(Context context, String username, File file, OnCompleteListener<String> listener) {
@@ -73,24 +74,29 @@ public class NetDao {
                 .execute(listener);
     }
 
-    public static void addContact(Context context, String username, String cname, OnCompleteListener<String> listener) {
+    public static void addContact(Context context, String username, String cname,
+                                  OnCompleteListener<String> listener) {
         OkHttpUtils<String> utils = new OkHttpUtils<>(context);
         utils.setRequestUrl(I.REQUEST_ADD_CONTACT)
                 .addParam(I.Contact.USER_NAME, username)
                 .addParam(I.Contact.CU_NAME, cname)
                 .targetClass(String.class)
                 .execute(listener);
+
     }
 
-    public static void downloadContact(Context context, String username, OnCompleteListener<String> listener) {
+    public static void loadContact(Context context, String username,
+                                   OnCompleteListener<String> listener) {
         OkHttpUtils<String> utils = new OkHttpUtils<>(context);
         utils.setRequestUrl(I.REQUEST_DOWNLOAD_CONTACT_ALL_LIST)
                 .addParam(I.Contact.USER_NAME, username)
                 .targetClass(String.class)
                 .execute(listener);
+
     }
 
-    public static void removeContact(Context context, String username, String cname, OnCompleteListener<String> listener) {
+    public static void removeContact(Context context, String username, String cname,
+                                     OnCompleteListener<String> listener) {
         OkHttpUtils<String> utils = new OkHttpUtils<>(context);
         utils.setRequestUrl(I.REQUEST_DELETE_CONTACT)
                 .addParam(I.Contact.USER_NAME, username)
@@ -99,7 +105,7 @@ public class NetDao {
                 .execute(listener);
     }
 
-    public static void createAppGroup(Context context, EMGroup group, File file, OnCompleteListener<String> listener) {
+    public static void createGroup(Context context, EMGroup group, File file, OnCompleteListener<String> listener) {
         OkHttpUtils<String> utils = new OkHttpUtils<>(context);
         utils.setRequestUrl(I.REQUEST_CREATE_GROUP)
                 .addParam(I.Group.HX_ID, group.getGroupId())
@@ -123,7 +129,7 @@ public class NetDao {
                 .execute(listener);
     }
 
-    public static void deleteGroupMember(Context context, String hxid, String username, OnCompleteListener<String> listener) {
+    public static void removeGroupMember(Context context, String hxid, String username, OnCompleteListener<String> listener) {
         OkHttpUtils<String> utils = new OkHttpUtils<>(context);
         utils.setRequestUrl(I.REQUEST_DELETE_GROUP_MEMBER)
                 .addParam(I.Member.GROUP_HX_ID, hxid)
@@ -132,14 +138,15 @@ public class NetDao {
                 .execute(listener);
     }
 
-    public static void updateGroupName(Context context, String hxid, String groupName, OnCompleteListener<String> listener) {
+    public static void updateGroupName(Context context, String hxid, String groupname, OnCompleteListener<String> listener) {
         OkHttpUtils<String> utils = new OkHttpUtils<>(context);
         utils.setRequestUrl(I.REQUEST_UPDATE_GROUP_NAME)
                 .addParam(I.Group.HX_ID, hxid)
-                .addParam(I.Group.NAME, groupName)
+                .addParam(I.Group.NAME, groupname)
                 .targetClass(String.class)
                 .execute(listener);
     }
+
     public static void deleteGroup(Context context, String hxid, OnCompleteListener<String> listener) {
         OkHttpUtils<String> utils = new OkHttpUtils<>(context);
         utils.setRequestUrl(I.REQUEST_DELETE_GROUP_BY_HXID)

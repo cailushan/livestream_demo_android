@@ -31,18 +31,6 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             + UserDao.COLUMN_NAME_AVATAR + " TEXT, "
             + UserDao.COLUMN_NAME_ID + " TEXT PRIMARY KEY);";
 
-    private static final String USER_TABLE_CREATE = "CREATE TABLE "
-            + UserDao.USER_TABLE_NAME + " ("
-            + UserDao.USER_COLUMN_NAME + " TEXT PRIMARY KEY, "
-            + UserDao.USER_COLUMN_NAME_NICK + " TEXT, "
-            + UserDao.USER_COLUMN_NAME_AVATAR_ID + " INTEGER, "
-            + UserDao.USER_TABLE_NAME_AVATAR_NAME + " TEXT, "
-            + UserDao.USER_COLUMN_NAME_AVATAR_SUFFIX + " TEXT, "
-            + UserDao.USER_COLUMN_NAME_AVATAR_PATH + " TEXT, "
-            + UserDao.USER_COLUMN_NAME_AVATAR_TYPE + " INTEGER, "
-            + UserDao.USER_COLUMN_NAME_AVATAR_UPDATE_TIME + " TEXT);";
-
-
     private static final String CREATE_PREF_TABLE = "CREATE TABLE "
             + UserDao.PREF_TABLE_NAME + " ("
             + UserDao.COLUMN_NAME_DISABLED_GROUPS + " TEXT, "
@@ -51,6 +39,18 @@ public class DbOpenHelper extends SQLiteOpenHelper {
     private DbOpenHelper(Context context) {
         super(context, getUserDatabaseName(), null, DATABASE_VERSION);
     }
+
+    // 本地数据库
+    private static final String USER_TABLE_CREATE = "CREATE TABLE "
+            + UserDao.USER_TABLE_NAME + " ("
+            + UserDao.USER_COLUMN_NAME + " TEXT PRIMARY KEY, "
+            + UserDao.USER_COLUMN_NAME_NICK + " TEXT, "
+            + UserDao.USER_COLUMN_AVATAR_ID + " INTEGER, "
+            + UserDao.USER_COLUMN_AVATAR_NAME + " TEXT, "
+            + UserDao.USER_COLUMN_AVATAR_SUFFIX + " TEXT, "
+            + UserDao.USER_COLUMN_AVATAR_PATH + " TEXT, "
+            + UserDao.USER_COLUMN_AVATAR_TYPE + " INTEGER, "
+            + UserDao.USER_COLUMN_AVATAR_UPDATE_TIME + " TEXT);";
 
     public static DbOpenHelper getInstance(Context context) {
         if (instance == null) {
@@ -68,7 +68,6 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         db.execSQL(USERNAME_TABLE_CREATE);
         db.execSQL(CREATE_PREF_TABLE);
         db.execSQL(USER_TABLE_CREATE);
-
     }
 
     @Override

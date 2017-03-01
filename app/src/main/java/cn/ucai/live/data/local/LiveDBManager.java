@@ -17,6 +17,7 @@ import java.util.Map;
 import cn.ucai.live.LiveApplication;
 import cn.ucai.live.LiveConstants;
 
+
 public class LiveDBManager {
     static private LiveDBManager dbMgr = new LiveDBManager();
     private DbOpenHelper dbHelper;
@@ -171,6 +172,7 @@ public class LiveDBManager {
         return null;
     }
 
+
     synchronized public void closeDB() {
         if (dbHelper != null) {
             dbHelper.closeDB();
@@ -178,6 +180,7 @@ public class LiveDBManager {
         dbMgr = null;
     }
 
+    // 自己服务器的数据库
 
     /**
      * save contact list
@@ -190,27 +193,26 @@ public class LiveDBManager {
             db.delete(UserDao.USER_TABLE_NAME, null, null);
             for (User user : contactList) {
                 ContentValues values = new ContentValues();
-                if (user.getMUserName() != null)
-                    values.put(UserDao.USER_COLUMN_NAME, user.getMUserName());
+                values.put(UserDao.USER_COLUMN_NAME, user.getMUserName());
                 if (user.getMUserNick() != null)
                     values.put(UserDao.USER_COLUMN_NAME_NICK, user.getMUserNick());
                 if (user.getMAvatarId() != null)
-                    values.put(UserDao.USER_COLUMN_NAME_AVATAR_ID, user.getMAvatarId());
+                    values.put(UserDao.USER_COLUMN_AVATAR_ID, user.getMAvatarId());
                 if (user.getMAvatarPath() != null)
-                    values.put(UserDao.USER_COLUMN_NAME_AVATAR_PATH, user.getMAvatarPath());
+                    values.put(UserDao.USER_COLUMN_AVATAR_PATH, user.getMAvatarPath());
                 if (user.getMAvatarSuffix() != null)
-                    values.put(UserDao.USER_COLUMN_NAME_AVATAR_SUFFIX, user.getMAvatarSuffix());
+                    values.put(UserDao.USER_COLUMN_AVATAR_SUFFIX, user.getMAvatarSuffix());
                 if (user.getMAvatarType() != null)
-                    values.put(UserDao.USER_COLUMN_NAME_AVATAR_TYPE, user.getMAvatarType());
+                    values.put(UserDao.USER_COLUMN_AVATAR_TYPE, user.getMAvatarType());
                 if (user.getMAvatarLastUpdateTime() != null)
-                    values.put(UserDao.USER_COLUMN_NAME_AVATAR_UPDATE_TIME, user.getMAvatarLastUpdateTime());
+                    values.put(UserDao.USER_COLUMN_AVATAR_UPDATE_TIME, user.getMAvatarLastUpdateTime());
                 db.replace(UserDao.USER_TABLE_NAME, null, values);
             }
         }
     }
 
     /**
-     * get contact list
+     * get Appcontact list
      *
      * @return
      */
@@ -223,11 +225,12 @@ public class LiveDBManager {
                 User user = new User();
                 user.setMUserName(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_NAME)));
                 user.setMUserNick(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_NAME_NICK)));
-                user.setMAvatarId(cursor.getInt(cursor.getColumnIndex(UserDao.USER_COLUMN_NAME_AVATAR_ID)));
-                user.setMAvatarPath(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_NAME_AVATAR_PATH)));
-                user.setMAvatarType(cursor.getInt(cursor.getColumnIndex(UserDao.USER_COLUMN_NAME_AVATAR_TYPE)));
-                user.setMAvatarSuffix(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_NAME_AVATAR_SUFFIX)));
-                user.setMAvatarLastUpdateTime(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_NAME_AVATAR_UPDATE_TIME)));
+                user.setMAvatarId(cursor.getInt(cursor.getColumnIndex(UserDao.USER_COLUMN_AVATAR_ID)));
+                user.setMAvatarPath(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_AVATAR_PATH)));
+                user.setMAvatarType(cursor.getInt(cursor.getColumnIndex(UserDao.USER_COLUMN_AVATAR_TYPE)));
+                user.setMAvatarSuffix(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_AVATAR_SUFFIX)));
+                user.setMAvatarLastUpdateTime(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_AVATAR_UPDATE_TIME)));
+
                 EaseCommonUtils.setAppUserInitialLetter(user);
                 users.put(user.getMUserName(), user);
             }
@@ -237,7 +240,7 @@ public class LiveDBManager {
     }
 
     /**
-     * delete a contact
+     * delete a Appcontact
      *
      * @param username
      */
@@ -249,7 +252,7 @@ public class LiveDBManager {
     }
 
     /**
-     * save a contact
+     * save a Appcontact
      *
      * @param user
      */
@@ -260,18 +263,18 @@ public class LiveDBManager {
         if (user.getMUserNick() != null)
             values.put(UserDao.USER_COLUMN_NAME_NICK, user.getMUserNick());
         if (user.getMAvatarId() != null)
-            values.put(UserDao.USER_COLUMN_NAME_AVATAR_ID, user.getMAvatarId());
+            values.put(UserDao.USER_COLUMN_AVATAR_ID, user.getMAvatarId());
         if (user.getMAvatarPath() != null)
-            values.put(UserDao.USER_COLUMN_NAME_AVATAR_PATH, user.getMAvatarPath());
+            values.put(UserDao.USER_COLUMN_AVATAR_PATH, user.getMAvatarPath());
         if (user.getMAvatarSuffix() != null)
-            values.put(UserDao.USER_COLUMN_NAME_AVATAR_SUFFIX, user.getMAvatarSuffix());
+            values.put(UserDao.USER_COLUMN_AVATAR_SUFFIX, user.getMAvatarSuffix());
         if (user.getMAvatarType() != null)
-            values.put(UserDao.USER_COLUMN_NAME_AVATAR_TYPE, user.getMAvatarType());
+            values.put(UserDao.USER_COLUMN_AVATAR_TYPE, user.getMAvatarType());
         if (user.getMAvatarLastUpdateTime() != null)
-            values.put(UserDao.USER_COLUMN_NAME_AVATAR_UPDATE_TIME, user.getMAvatarLastUpdateTime());
+            values.put(UserDao.USER_COLUMN_AVATAR_UPDATE_TIME, user.getMAvatarLastUpdateTime());
         if (db.isOpen()) {
             db.replace(UserDao.USER_TABLE_NAME, null, values);
         }
-
     }
+
 }
