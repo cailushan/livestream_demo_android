@@ -13,14 +13,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import cn.ucai.live.LiveConstants;
 import cn.ucai.live.LiveHelper;
-import cn.ucai.live.data.model.LiveSettings;
-
 import cn.ucai.live.R;
+import cn.ucai.live.data.model.LiveSettings;
 import cn.ucai.live.utils.MFGT;
 
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.easeui.EaseConstant;
+import com.hyphenate.easeui.domain.EaseUser;
+import com.hyphenate.easeui.utils.EaseImageUtils;
 import com.hyphenate.easeui.utils.EaseUserUtils;
 import com.hyphenate.easeui.widget.EaseImageView;
 
@@ -49,7 +52,8 @@ public class MyProfileFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //usernameView.setText(EMClient.getInstance().getCurrentUser());
+        usernameView.setText(EMClient.getInstance().getCurrentUser());
+
         EaseUserUtils.setAppUserAvatar(getContext(), EMClient.getInstance().getCurrentUser(), userAvatar);
         EaseUserUtils.setAppUserNick(EMClient.getInstance().getCurrentUser(), usernameView);
 
@@ -82,7 +86,25 @@ public class MyProfileFragment extends Fragment {
             public void onSuccess() {
                 getActivity().finish();
                 MFGT.gotoLoginCleanTask(getActivity());
-                //startActivity(new Intent(getActivity(), LoginActivity.class));
+//                startActivity(new Intent(getActivity(), LoginActivity.class));
+            }
+
+            @Override
+            public void onError(int i, String s) {
+
+            }
+
+            @Override
+            public void onProgress(int i, String s) {
+
+            }
+        });
+
+        EMClient.getInstance().logout(false, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                getActivity().finish();
+                startActivity(new Intent(getActivity(), LoginActivity.class));
             }
 
             @Override

@@ -82,7 +82,6 @@ public class LoginActivity extends BaseActivity {
         if (LiveHelper.getInstance().getCurrentUsernName() != null) {
             mEmailView.setText(LiveHelper.getInstance().getCurrentUsernName());
         }
-
     }
 
 
@@ -129,6 +128,7 @@ public class LoginActivity extends BaseActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
+
             // After logout，the DemoDB may still be accessed due to async callback, so the DemoDB will be re-opened again.
             // close it before login to make sure DemoDB not overlap
             LiveDBManager.getInstance().closeDB();
@@ -145,7 +145,7 @@ public class LoginActivity extends BaseActivity {
         EMClient.getInstance().login(email, MD5.getMessageDigest(password), new EMCallBack() {
             @Override
             public void onSuccess() {
-                LoginSuccess();
+                loginSuccess();
             }
 
             @Override
@@ -164,13 +164,12 @@ public class LoginActivity extends BaseActivity {
             public void onProgress(int i, String s) {
             }
         });
+
     }
 
-    private void LoginSuccess() {
-        // get user's info (this should be get from App's server or 3rd party service)
+    private void loginSuccess() {
         LiveHelper.getInstance().asyncGetCurrentUserInfo(this);
-        Intent intent = new Intent(LoginActivity.this,
-                MainActivity.class);
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
     }
