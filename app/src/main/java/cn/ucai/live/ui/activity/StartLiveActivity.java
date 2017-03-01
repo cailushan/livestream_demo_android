@@ -40,7 +40,6 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.controller.EaseUI;
 import com.hyphenate.easeui.domain.User;
 import com.hyphenate.easeui.utils.EaseUserUtils;
-import com.hyphenate.easeui.widget.EaseAlertDialog;
 import com.hyphenate.easeui.widget.EaseImageView;
 import com.ucloud.common.util.DeviceUtils;
 import com.ucloud.live.UEasyStreaming;
@@ -111,11 +110,21 @@ public class StartLiveActivity extends LiveBaseActivity
         EaseUserUtils.setAppUserAvatar(StartLiveActivity.this, EMClient.getInstance().getCurrentUser(), userAvatar);
         EaseUserUtils.setAppUserNick(EMClient.getInstance().getCurrentUser(), usernameView);
 
-        liveId = TestDataRepository.getLiveRoomId(EMClient.getInstance().getCurrentUser());
-        chatroomId = TestDataRepository.getChatRoomId(EMClient.getInstance().getCurrentUser());
-        anchorId = EMClient.getInstance().getCurrentUser();
-        //usernameView.setText(anchorId);
-        initEnv();
+//        liveId = TestDataRepository.getLiveRoomId(EMClient.getInstance().getCurrentUser());
+//        chatroomId = TestDataRepository.getChatRoomId(EMClient.getInstance().getCurrentUser());
+//        anchorId = EMClient.getInstance().getCurrentUser();
+        String id = getIntent().getStringExtra("liveId");
+        if (id != null && !id.equals("")) {
+            liveId = id;
+            chatroomId = id;
+            initEnv();
+        } else {
+            pd = new ProgressDialog(StartLiveActivity.this);
+            pd.setMessage("创建直播...");
+            pd.show();
+            createLive();
+        }
+        // initEnv();
     }
 
     public void initEnv() {
@@ -201,34 +210,13 @@ public class StartLiveActivity extends LiveBaseActivity
      */
     @OnClick(R.id.btn_start)
     void startLive() {
-        pd = new ProgressDialog(StartLiveActivity.this);
-        pd.setMessage("创建直播...");
-        pd.show();
-        createLive();
         //demo为了测试方便，只有指定的账号才能开启直播
-        if (liveId == null) {
+        if (liveId == null && liveId.equals("")) {
+            CommonUtils.showShortToast("获取直播数据失败!");
             return;
+        } else {
+            startLiveByRoom();
         }
-
-        startContainer.setVisibility(View.INVISIBLE);
-        //Utils.hideKeyboard(titleEdit);
-        new Thread() {
-            public void run() {
-                int i = COUNTDOWN_START_INDEX;
-                do {
-                    Message msg = Message.obtain();
-                    msg.what = MSG_UPDATE_COUNTDOWN;
-                    msg.arg1 = i;
-                    handler.sendMessage(msg);
-                    i--;
-                    try {
-                        Thread.sleep(COUNTDOWN_DELAY);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                } while (i >= COUNTDOWN_END_INDEX);
-            }
-        }.start();
     }
 
     private void createLive() {
@@ -240,11 +228,11 @@ public class StartLiveActivity extends LiveBaseActivity
                             pd.dismiss();
                             boolean success = false;
                             if (s != null) {
-                                List<String> ids = ResultUtils.getEMResultFromJson(s, String.class);
-                                if (ids != null && ids.size() > 0) {
+                                String id = ResultUtils.getEMResultFromJson(s);
+                                if (id != null) {
                                     success = true;
-                                    initLive(ids.get(0));
-                                    startLiveByRoom();
+                                    initLive(id);
+                                    //startLiveByRoom();
                                 }
                             }
                             if (!success) {
