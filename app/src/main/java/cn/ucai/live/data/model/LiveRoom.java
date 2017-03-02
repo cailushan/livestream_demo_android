@@ -10,7 +10,7 @@ public class LiveRoom implements Parcelable {
     private String id;
     private String name;
     private int audienceNum;
-    private String  cover;
+    private String cover;
     private String chatroomId;
     private String anchorId;
 
@@ -96,4 +96,16 @@ public class LiveRoom implements Parcelable {
             return new LiveRoom[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "LiveRoom{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", audienceNum=" + audienceNum +
+                ", cover=" + cover +
+                ", chatroomId='" + chatroomId + '\'' +
+                ", anchorId='" + anchorId + '\'' +
+                '}';
+    }
 }
