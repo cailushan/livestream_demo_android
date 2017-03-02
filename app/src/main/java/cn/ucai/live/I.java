@@ -282,6 +282,7 @@ public interface I {
     String REQUEST_DOWNLOAD_LOCATION = "downloadLocation";
     String BACK_MAIN_FROM_CHAT = "back_main_from_chat";
     String REQUEST_CREATE_CHATROOM = "live/createChatRoom";
+    String REQUEST_DELETE_CHATROOM = "live/deleteChatRoom";
 
     int REQUESTCODE_PICK = 1;
     int REQUESTCODE_CUTTING = 2;
