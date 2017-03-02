@@ -61,6 +61,7 @@ public class LiveHelper {
     public interface DataSyncListener {
         /**
          * sync complete
+         *
          * @param success true：data sync successful，false: failed to sync data
          */
         void onSyncComplete(boolean success);
@@ -78,7 +79,7 @@ public class LiveHelper {
     private Map<String, EaseUser> contactList;
 
     private Map<String, User> appContactList;
-    private Map<Integer,Gift> appGiftList;
+    private Map<Integer, Gift> appGiftList;
 
     private static LiveHelper instance = null;
 
@@ -127,8 +128,7 @@ public class LiveHelper {
     /**
      * init helper
      *
-     * @param context
-     *            application context
+     * @param context application context
      */
     public void init(Context context) {
         demoModel = new LiveModel(context);
@@ -163,12 +163,12 @@ public class LiveHelper {
         NetDao.loadAllGift(appContext, new OnCompleteListener<String>() {
             @Override
             public void onSuccess(String s) {
-                if (s!=null){
+                if (s != null) {
                     Result result = ResultUtils.getListResultFromJson(s, Gift.class);
-                    if (result!=null && result.isRetMsg()){
+                    if (result != null && result.isRetMsg()) {
                         List<Gift> list = (List<Gift>) result.getRetData();
-                        if(list!=null && list.size()>0){
-                            L.e(TAG,"gift list="+list.size());
+                        if (list != null && list.size() > 0) {
+                            L.e(TAG, "gift list=" + list.size());
                             Map<Integer, Gift> giftlist = new HashMap<>();
                             for (Gift gift : list) {
                                 giftlist.put(gift.getId(), gift);
@@ -193,7 +193,7 @@ public class LiveHelper {
     }
 
 
-    private EMOptions initChatOptions(){
+    private EMOptions initChatOptions() {
         Log.d(TAG, "init HuanXin Options");
 
         EMOptions options = new EMOptions();
@@ -257,12 +257,12 @@ public class LiveHelper {
 
             @Override
             public boolean isMsgNotifyAllowed(EMMessage message) {
-                if(message == null){
+                if (message == null) {
                     return demoModel.getSettingMsgNotification();
                 }
-                if(!demoModel.getSettingMsgNotification()){
+                if (!demoModel.getSettingMsgNotification()) {
                     return false;
-                }else{
+                } else {
                     String chatUsename = null;
                     List<String> notNotifyIds = null;
                     // get user or group id which was blocked to show message notifications
@@ -315,17 +315,17 @@ public class LiveHelper {
             public String getDisplayedText(EMMessage message) {
                 // be used on notification bar, different text according the message type.
                 String ticker = EaseCommonUtils.getMessageDigest(message, appContext);
-                if(message.getType() == Type.TXT){
+                if (message.getType() == Type.TXT) {
                     ticker = ticker.replaceAll("\\[.{2,3}\\]", "[表情]");
                 }
                 EaseUser user = getUserInfo(message.getFrom());
-                if(user != null){
-                    if(EaseAtMessageHelper.get().isAtMeMsg(message)){
+                if (user != null) {
+                    if (EaseAtMessageHelper.get().isAtMeMsg(message)) {
                         return String.format(appContext.getString(R.string.at_your_in_group), user.getNick());
                     }
                     return user.getNick() + ": " + ticker;
-                }else{
-                    if(EaseAtMessageHelper.get().isAtMeMsg(message)){
+                } else {
+                    if (EaseAtMessageHelper.get().isAtMeMsg(message)) {
                         return String.format(appContext.getString(R.string.at_your_in_group), message.getFrom());
                     }
                     return message.getFrom() + ": " + ticker;
@@ -351,9 +351,9 @@ public class LiveHelper {
                 } else { // group chat message
                     // message.getTo() is the group id
                     intent.putExtra("userId", message.getTo());
-                    if(chatType == ChatType.GroupChat){
+                    if (chatType == ChatType.GroupChat) {
                         intent.putExtra("chatType", LiveConstants.CHATTYPE_GROUP);
-                    }else{
+                    } else {
                         intent.putExtra("chatType", LiveConstants.CHATTYPE_CHATROOM);
                     }
 
@@ -364,10 +364,11 @@ public class LiveHelper {
     }
 
     EMConnectionListener connectionListener;
+
     /**
      * set global listener
      */
-    protected void setGlobalListeners(){
+    protected void setGlobalListeners() {
         syncGroupsListeners = new ArrayList<DataSyncListener>();
         syncContactsListeners = new ArrayList<DataSyncListener>();
         syncBlackListListeners = new ArrayList<DataSyncListener>();
@@ -427,8 +428,8 @@ public class LiveHelper {
     /**
      * register group and contact listener, you need register when login
      */
-    public void registerGroupAndContactListener(){
-        if(!isGroupAndContactListenerRegisted){
+    public void registerGroupAndContactListener() {
+        if (!isGroupAndContactListenerRegisted) {
             EMClient.getInstance().groupManager().addGroupChangeListener(new MyGroupChangeListener());
             EMClient.getInstance().contactManager().setContactListener(new MyContactListener());
             isGroupAndContactListenerRegisted = true;
@@ -489,7 +490,6 @@ public class LiveHelper {
 
     /***
      * 好友变化listener
-     *
      */
     public class MyContactListener implements EMContactListener {
 
@@ -523,7 +523,7 @@ public class LiveHelper {
     /**
      * user met some exception: conflict, removed or forbidden
      */
-    protected void onUserException(String exception){
+    protected void onUserException(String exception) {
         EMLog.e(TAG, "onUserException: " + exception);
         Intent intent = new Intent(appContext, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -531,7 +531,7 @@ public class LiveHelper {
         appContext.startActivity(intent);
     }
 
-    private EaseUser getUserInfo(String username){
+    private EaseUser getUserInfo(String username) {
         // To get instance of EaseUser, here we get it from the user list in memory
         // You'd better cache it if you get it from your server
         EaseUser user = null;
@@ -540,21 +540,21 @@ public class LiveHelper {
         user = getContactList().get(username);
 
         // if user is not in your contacts, set inital letter for him/her
-        if(user == null){
+        if (user == null) {
             user = new EaseUser(username);
             EaseCommonUtils.setUserInitialLetter(user);
         }
         return user;
     }
 
-    private User getAppUserInfo(String username){
+    private User getAppUserInfo(String username) {
         // To get instance of EaseUser, here we get it from the user list in memory
         // You'd better cache it if you get it from your server
         User user = null;
         user = getAppContactList().get(username);
 
         // if user is not in your contacts, set inital letter for him/her
-        if(user == null){
+        if (user == null) {
             user = new User(username);
             EaseCommonUtils.setAppUserInitialLetter(user);
         }
@@ -575,7 +575,7 @@ public class LiveHelper {
                 for (EMMessage message : messages) {
                     EMLog.d(TAG, "onMessageReceived id : " + message.getMsgId());
                     // in background, do not refresh UI, notify it in notification bar
-                    if(!easeUI.hasForegroundActivies()){
+                    if (!easeUI.hasForegroundActivies()) {
                         getNotifier().onNewMsg(message);
                     }
                 }
@@ -604,7 +604,7 @@ public class LiveHelper {
                     //获取扩展属性 此处省略
                     //maybe you need get extension of your message
                     //message.getStringAttribute("");
-                    EMLog.d(TAG, String.format("Command：action:%s,message:%s", action,message.toString()));
+                    EMLog.d(TAG, String.format("Command：action:%s,message:%s", action, message.toString()));
                 }
             }
 
@@ -639,10 +639,8 @@ public class LiveHelper {
     /**
      * logout
      *
-     * @param unbindDeviceToken
-     *            whether you need unbind your device token
-     * @param callback
-     *            callback
+     * @param unbindDeviceToken whether you need unbind your device token
+     * @param callback          callback
      */
     public void logout(boolean unbindDeviceToken, final EMCallBack callback) {
         endCall();
@@ -679,13 +677,14 @@ public class LiveHelper {
 
     /**
      * get instance of EaseNotifier
+     *
      * @return
      */
-    public EaseNotifier getNotifier(){
+    public EaseNotifier getNotifier() {
         return easeUI.getNotifier();
     }
 
-    public LiveModel getModel(){
+    public LiveModel getModel() {
         return (LiveModel) demoModel;
     }
 
@@ -695,7 +694,7 @@ public class LiveHelper {
      * @param aContactList
      */
     public void setContactList(Map<String, EaseUser> aContactList) {
-        if(aContactList == null){
+        if (aContactList == null) {
             if (contactList != null) {
                 contactList.clear();
             }
@@ -708,7 +707,7 @@ public class LiveHelper {
     /**
      * save single contact
      */
-    public void saveContact(EaseUser user){
+    public void saveContact(EaseUser user) {
         contactList.put(user.getUsername(), user);
         demoModel.saveContact(user);
     }
@@ -724,7 +723,7 @@ public class LiveHelper {
         }
 
         // return a empty non-null object to avoid app crash
-        if(contactList == null){
+        if (contactList == null) {
             return new Hashtable<String, EaseUser>();
         }
 
@@ -733,9 +732,10 @@ public class LiveHelper {
 
     /**
      * set current username
+     *
      * @param username
      */
-    public void setCurrentUserName(String username){
+    public void setCurrentUserName(String username) {
         this.username = username;
         demoModel.setCurrentUserName(username);
     }
@@ -743,8 +743,8 @@ public class LiveHelper {
     /**
      * get current user's id
      */
-    public String getCurrentUsernName(){
-        if(username == null){
+    public String getCurrentUsernName() {
+        if (username == null) {
             username = demoModel.getCurrentUsernName();
         }
         return username;
@@ -829,23 +829,24 @@ public class LiveHelper {
     /**
      * Get group list from server
      * This method will save the sync state
+     *
      * @throws HyphenateException
      */
-    public synchronized void asyncFetchGroupsFromServer(final EMCallBack callback){
-        if(isSyncingGroupsWithServer){
+    public synchronized void asyncFetchGroupsFromServer(final EMCallBack callback) {
+        if (isSyncingGroupsWithServer) {
             return;
         }
 
         isSyncingGroupsWithServer = true;
 
-        new Thread(){
+        new Thread() {
             @Override
-            public void run(){
+            public void run() {
                 try {
                     EMClient.getInstance().groupManager().getJoinedGroupsFromServer();
 
                     // in case that logout already before server returns, we should return immediately
-                    if(!isLoggedIn()){
+                    if (!isLoggedIn()) {
                         isGroupsSyncedWithServer = false;
                         isSyncingGroupsWithServer = false;
                         noitifyGroupSyncListeners(false);
@@ -860,7 +861,7 @@ public class LiveHelper {
                     //notify sync group list success
                     noitifyGroupSyncListeners(true);
 
-                    if(callback != null){
+                    if (callback != null) {
                         callback.onSuccess();
                     }
                 } catch (HyphenateException e) {
@@ -868,7 +869,7 @@ public class LiveHelper {
                     isGroupsSyncedWithServer = false;
                     isSyncingGroupsWithServer = false;
                     noitifyGroupSyncListeners(false);
-                    if(callback != null){
+                    if (callback != null) {
                         callback.onError(e.getErrorCode(), e.toString());
                     }
                 }
@@ -877,14 +878,14 @@ public class LiveHelper {
         }.start();
     }
 
-    public void noitifyGroupSyncListeners(boolean success){
+    public void noitifyGroupSyncListeners(boolean success) {
         for (DataSyncListener listener : syncGroupsListeners) {
             listener.onSyncComplete(success);
         }
     }
 
-    public void asyncFetchContactsFromServer(final EMValueCallBack<List<String>> callback){
-        if(isSyncingContactsWithServer){
+    public void asyncFetchContactsFromServer(final EMValueCallBack<List<String>> callback) {
+        if (isSyncingContactsWithServer) {
             return;
         }
 
@@ -925,14 +926,14 @@ public class LiveHelper {
 //                   });
 //       }
 
-        new Thread(){
+        new Thread() {
             @Override
-            public void run(){
+            public void run() {
                 List<String> usernames = null;
                 try {
                     usernames = EMClient.getInstance().contactManager().getAllContactsFromServer();
                     // in case that logout already before server returns, we should return immediately
-                    if(!isLoggedIn()){
+                    if (!isLoggedIn()) {
                         isContactsSyncedWithServer = false;
                         isSyncingContactsWithServer = false;
                         notifyContactsSyncListener(false);
@@ -974,7 +975,7 @@ public class LiveHelper {
 //                       public void onError(int error, String errorMsg) {
 //                       }
 //                   });
-                    if(callback != null){
+                    if (callback != null) {
                         callback.onSuccess(usernames);
                     }
                 } catch (HyphenateException e) {
@@ -983,7 +984,7 @@ public class LiveHelper {
                     isSyncingContactsWithServer = false;
                     notifyContactsSyncListener(false);
                     e.printStackTrace();
-                    if(callback != null){
+                    if (callback != null) {
                         callback.onError(e.getErrorCode(), e.toString());
                     }
                 }
@@ -992,28 +993,28 @@ public class LiveHelper {
         }.start();
     }
 
-    public void notifyContactsSyncListener(boolean success){
+    public void notifyContactsSyncListener(boolean success) {
         for (DataSyncListener listener : syncContactsListeners) {
             listener.onSyncComplete(success);
         }
     }
 
-    public void asyncFetchBlackListFromServer(final EMValueCallBack<List<String>> callback){
+    public void asyncFetchBlackListFromServer(final EMValueCallBack<List<String>> callback) {
 
-        if(isSyncingBlackListWithServer){
+        if (isSyncingBlackListWithServer) {
             return;
         }
 
         isSyncingBlackListWithServer = true;
 
-        new Thread(){
+        new Thread() {
             @Override
-            public void run(){
+            public void run() {
                 try {
                     List<String> usernames = EMClient.getInstance().contactManager().getBlackListFromServer();
 
                     // in case that logout already before server returns, we should return immediately
-                    if(!isLoggedIn()){
+                    if (!isLoggedIn()) {
                         isBlackListSyncedWithServer = false;
                         isSyncingBlackListWithServer = false;
                         notifyBlackListSyncListener(false);
@@ -1026,7 +1027,7 @@ public class LiveHelper {
                     isSyncingBlackListWithServer = false;
 
                     notifyBlackListSyncListener(true);
-                    if(callback != null){
+                    if (callback != null) {
                         callback.onSuccess(usernames);
                     }
                 } catch (HyphenateException e) {
@@ -1036,7 +1037,7 @@ public class LiveHelper {
                     isSyncingBlackListWithServer = true;
                     e.printStackTrace();
 
-                    if(callback != null){
+                    if (callback != null) {
                         callback.onError(e.getErrorCode(), e.toString());
                     }
                 }
@@ -1045,7 +1046,7 @@ public class LiveHelper {
         }.start();
     }
 
-    public void notifyBlackListSyncListener(boolean success){
+    public void notifyBlackListSyncListener(boolean success) {
         for (DataSyncListener listener : syncBlackListListeners) {
             listener.onSyncComplete(success);
         }
@@ -1075,7 +1076,7 @@ public class LiveHelper {
         return isBlackListSyncedWithServer;
     }
 
-    synchronized void reset(){
+    synchronized void reset() {
         isSyncingGroupsWithServer = false;
         isSyncingContactsWithServer = false;
         isSyncingBlackListWithServer = false;
@@ -1109,7 +1110,7 @@ public class LiveHelper {
      * @param aContactList
      */
     public void setAppContactList(Map<String, User> aContactList) {
-        if(aContactList == null){
+        if (aContactList == null) {
             if (appContactList != null) {
                 appContactList.clear();
             }
@@ -1122,7 +1123,7 @@ public class LiveHelper {
     /**
      * save single contact
      */
-    public void saveAppContact(User user){
+    public void saveAppContact(User user) {
         getAppContactList().put(user.getMUserName(), user);
         demoModel.saveAppContact(user);
     }
@@ -1133,17 +1134,18 @@ public class LiveHelper {
      * @return
      */
     public Map<String, User> getAppContactList() {
-        if (isLoggedIn() && (appContactList == null || appContactList.size()==0)) {
+        if (isLoggedIn() && (appContactList == null || appContactList.size() == 0)) {
             appContactList = demoModel.getAppContactList();
         }
 
         // return a empty non-null object to avoid app crash
-        if(appContactList == null){
+        if (appContactList == null) {
             return new Hashtable<String, User>();
         }
 
         return appContactList;
     }
+
     /**
      * update user list to cache and database
      *
@@ -1159,17 +1161,17 @@ public class LiveHelper {
     }
 
     public void asyncGetCurrentUserInfo(Activity activity) {
-        L.e("UserProfileManager","asyncGetCurrentUserInfo,username="+EMClient.getInstance().getCurrentUser());
-        NetDao.getUserInfoByUsername(activity, EMClient.getInstance().getCurrentUser(), new OnCompleteListener<String>() {
+        L.e("UserProfileManager", "asyncGetCurrentUserInfo,username=" + EMClient.getInstance().getCurrentUser());
+        NetDao.getUserInfoByUserName(activity, EMClient.getInstance().getCurrentUser(), new OnCompleteListener<String>() {
             @Override
             public void onSuccess(String s) {
-                L.e("UserProfileManager","s="+s);
-                if (s!=null){
+                L.e("UserProfileManager", "s=" + s);
+                if (s != null) {
                     Result result = ResultUtils.getResultFromJson(s, User.class);
-                    if (result!=null && result.isRetMsg()){
+                    if (result != null && result.isRetMsg()) {
                         User user = (User) result.getRetData();
-                        L.e(TAG,"user="+user);
-                        if (user!=null) {
+                        L.e(TAG, "user=" + user);
+                        if (user != null) {
                             //save user info to db
                             LiveHelper.getInstance().saveAppContact(user);
                             PreferenceManager.getInstance().setCurrentUserNick(user.getMUserNick());
@@ -1181,7 +1183,7 @@ public class LiveHelper {
 
             @Override
             public void onError(String error) {
-                L.e("UserProfileManager","error="+error);
+                L.e("UserProfileManager", "error=" + error);
             }
         });
     }
@@ -1192,7 +1194,7 @@ public class LiveHelper {
      * @param list
      */
     public void setAppGiftList(Map<Integer, Gift> list) {
-        if(list == null){
+        if (list == null) {
             if (appGiftList != null) {
                 appGiftList.clear();
             }
@@ -1208,12 +1210,12 @@ public class LiveHelper {
      * @return
      */
     public Map<Integer, Gift> getAppGiftList() {
-        if (appGiftList == null || appGiftList.size()==0) {
+        if (appGiftList == null || appGiftList.size() == 0) {
             appGiftList = demoModel.getAppGiftList();
         }
 
         // return a empty non-null object to avoid app crash
-        if(appGiftList == null){
+        if (appGiftList == null) {
             return new Hashtable<Integer, Gift>();
         }
 
