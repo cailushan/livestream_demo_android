@@ -30,6 +30,7 @@ import com.hyphenate.EMChatRoomChangeListener;
 import com.hyphenate.chat.EMChatRoom;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCursorResult;
+import com.hyphenate.easeui.utils.EaseUserUtils;
 import com.hyphenate.exceptions.HyphenateException;
 
 import cn.ucai.live.R;
@@ -256,7 +257,7 @@ public class LiveListFragment extends Fragment {
             liveRoom.setAudienceNum(room.getAffiliationsCount());
             liveRoom.setId(room.getId());
             liveRoom.setChatroomId(room.getId());
-            liveRoom.setCover(R.drawable.test1);
+            liveRoom.setCover(EaseUserUtils.getAppUserInfo(room.getOwner()).getAvatar());
             liveRoom.setAnchorId(room.getOwner());
             roomList.add(liveRoom);
         }
