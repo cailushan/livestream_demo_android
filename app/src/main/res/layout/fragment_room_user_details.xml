@@ -19,6 +19,7 @@
       android:background="@android:color/transparent"
       >
     <com.hyphenate.easeui.widget.EaseImageView
+        android:id="@+id/dialog_user_avatar"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:src="@drawable/ease_default_avatar"
@@ -80,7 +81,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/common_black"
-        android:text="这个家伙很懒，什么都没有写！"
+        android:text="这个家伙很帅，就是不写！"
         />
     <LinearLayout
         android:layout_width="match_parent"
