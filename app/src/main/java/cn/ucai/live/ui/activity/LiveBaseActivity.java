@@ -23,13 +23,19 @@ import butterknife.OnClick;
 import cn.ucai.live.I;
 import cn.ucai.live.LiveConstants;
 import cn.ucai.live.LiveHelper;
+import cn.ucai.live.data.NetDao;
 import cn.ucai.live.data.TestAvatarRepository;
 import cn.ucai.live.data.model.Gift;
+import cn.ucai.live.data.model.Result;
+import cn.ucai.live.data.model.Wallet;
 import cn.ucai.live.ui.widget.BarrageLayout;
 import cn.ucai.live.ui.widget.LiveLeftGiftView;
 import cn.ucai.live.ui.widget.PeriscopeLayout;
 import cn.ucai.live.ui.widget.RoomMessagesView;
+import cn.ucai.live.utils.CommonUtils;
+import cn.ucai.live.utils.OnCompleteListener;
 import cn.ucai.live.utils.PreferenceManager;
+import cn.ucai.live.utils.ResultUtils;
 import cn.ucai.live.utils.Utils;
 
 import com.bumptech.glide.Glide;
@@ -505,10 +511,10 @@ public abstract class LiveBaseActivity extends BaseActivity {
     }
 
     private void showPayMentTip(final RoomGiftListDialog dialog, final int id) {
+        final Gift gift = LiveHelper.getInstance().getAppGiftList().get(id);
         if (PreferenceManager.getInstance().getPayMentTip()) {
-            sendGift(dialog, id);
+            sendGift(dialog, gift);
         } else {
-            Gift gift = LiveHelper.getInstance().getAppGiftList().get(id);
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(LiveBaseActivity.this);
             builder.setTitle("提示")
@@ -530,14 +536,61 @@ public abstract class LiveBaseActivity extends BaseActivity {
             }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    sendGift(dialog, id);
+                    sendGift(dialog, gift);
                 }
             });
             builder.show();
         }
     }
 
-    private void sendGift(RoomGiftListDialog dialog, int id) {
+    public void sendGift(final RoomGiftListDialog dialog, final Gift gift) {
+        int change = PreferenceManager.getInstance().getCurrentChange();
+        if (change >= gift.getGprice()) {
+            NetDao.givingGift(LiveBaseActivity.this, EMClient.getInstance().getCurrentUser(), chatroom.getOwner(),
+                    gift.getId(), 1, new OnCompleteListener<String>() {
+                        @Override
+                        public void onSuccess(String s) {
+                            boolean success = false;
+                            if (s != null) {
+                                Result result = ResultUtils.getResultFromJson(s, Wallet.class);
+                                if (result != null && result.isRetMsg()) {
+                                    success = true;
+                                    Wallet wallet = (Wallet) result.getRetData();
+                                    PreferenceManager.getInstance().setCurrentChange(wallet.getBalance());
+                                    sendGiftMsg(dialog, gift.getId());
+                                }
+                            }
+                            if (!success) {
+                                CommonUtils.showShortToast("打赏失败！");
+                            }
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            CommonUtils.showShortToast("打赏失败！" + error);
+                        }
+                    });
+        } else {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(LiveBaseActivity.this);
+            builder.setTitle("余额提示")
+                    .setMessage("该礼物需要支付" + gift.getGprice() + "￥，" + "\n" + "您的余额不足，您需要充值吗?");
+            builder.setPositiveButton("充值", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface d, int which) {
+                    dialog.dismiss();
+                }
+            }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface d, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
+        }
+    }
+
+
+    private void sendGiftMsg(RoomGiftListDialog dialog, int id) {
         dialog.dismiss();
         User user = EaseUserUtils.getAppUserInfo(EMClient.getInstance().getCurrentUser());
         EMMessage message = EMMessage.createSendMessage(EMMessage.Type.CMD);
