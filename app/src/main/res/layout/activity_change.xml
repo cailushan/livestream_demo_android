@@ -8,6 +8,12 @@
         android:id="@+id/toolbar"
         style="@style/ToolbarNormal">
 
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ease_back" />
+
         <TextView
             style="@style/TitleNormal"
             android:text="我的钱包" />

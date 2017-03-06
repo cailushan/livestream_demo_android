@@ -11,11 +11,13 @@ import com.hyphenate.chat.EMClient;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.ucai.live.R;
 import cn.ucai.live.data.NetDao;
 import cn.ucai.live.data.model.Result;
 import cn.ucai.live.data.model.Wallet;
 import cn.ucai.live.utils.CommonUtils;
+import cn.ucai.live.utils.MFGT;
 import cn.ucai.live.utils.OnCompleteListener;
 import cn.ucai.live.utils.PreferenceManager;
 import cn.ucai.live.utils.ResultUtils;
@@ -73,5 +75,10 @@ public class ChangeActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @OnClick(R.id.ivBack)
+    public void onClick() {
+        MFGT.finish(ChangeActivity.this);
     }
 }
